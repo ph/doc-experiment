@@ -84,19 +84,19 @@ type TLSConfig struct {
 	//     - optional
 	//     - required
 	//   default: required
-	ClientAuth tls.ClientAuthType `yaml:"ca_sha256"`
+	ClientAuth tls.ClientAuthType `yaml:"verification_mode"`
 
 	//   description: |
 	//     The CA certificate pin used to validate the CA used to trust the server certificate.
 	//     The pin is a base64 encoded string of the SHA-256 of the certificate.
 	//
 	//     > Note: Do not use this setting with `verification_mode` set to `none`, or the check will always fail because it will not receive any verified chains.
-	CASha256 []string `yaml:"ca_trusted _fingerprint"`
+	CASha256 []string `yaml:"ca_sha256"`
 
 	//   description: |
 	//     The HEX-encoded fingerprint of a CA certificate.
 	//     If present in the chain, this certificate is added to the list of trusted CAs (root CAs) during the handshake.
-	CATrustedFingerprint string
+	CATrustedFingerprint string `yaml:"ca_trusted _fingerprint"`
 
 	// time returns the current time as the number of seconds since the epoch.
 	// If time is nil, TLS uses time.Now.
