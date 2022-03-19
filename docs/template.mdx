@@ -1,0 +1,312 @@
+---
+id: agentConfigReference
+slug: /docs/elasticagent/configreference
+title: Elastic Agent configuraton reference
+description: Reference documentation and examples about Elastic Agent configuration settings.
+date: 2022-03-14
+tags: ['Elastic Agent','Settings','configuration','elastic-agent.yml']
+---
+
+## Agent
+
+Defines the Elastic Agent configuration.
+
+```yaml
+outputs: #...
+inputs: #...
+mode: #...
+```
+---
+
+`outputs` _<DocLink id="agentConfigReference" section="output" text="map[string]Output" />_
+
+: One or more output configurations that specify where to send data.
+You can pair specific inputs with specific outputs.
+
+---
+
+`inputs` _<DocLink id="agentConfigReference" section="input" text="[]Input" />_
+
+: List of input configurations that specify how to locate and processes data.
+By default Elastic Agent collects system metrics, such as cpu, memory, network, and filesystem metrics, and sends them to the default output. 
+
+---
+
+`mode` _string_
+
+: The managementment mode for Elastic Agent.
+
+    Valid values:
+
+    - `local` (default)
+    - `whatelse`
+
+{/* Not sure how tricky this is ^^, but where we provide a list of valid values, would be good to indicate the default in the list itself. */}
+
+{/* There is only one valid value shown in the example. Is the other value `fleet`? */}
+
+---
+
+## Output
+
+{/* I'm not sure what the best way of doing this is */}
+
+Defines an Elastic Agent output configuration. Can be an elasticsearch or
+logstash output configuration.
+
+{/* Would be nice to have links here, but as you can see, our syntax is kind of verbose. Not sure we want to embed this in comments. */}
+
+## Elasticsearch
+
+Defines an Elasticsearch output configuration.
+
+```yaml
+default:
+  type: elasticsearch
+  hosts: [127.0.0.1:9200]
+  api-key: "example-key"
+  # username: "elastic"
+  # password: "changeme"
+```
+
+---
+
+`hosts` _[]string_
+
+: A list of Elasticsearch nodes to connect to.
+The events are distributed to these nodes in round robin order.
+If one node becomes unreachable, the event is automatically sent to another node.	
+
+---
+
+`api-key` _string_
+
+: The API key to use for token-based authentication.
+
+---
+
+`username` _string_
+
+: The basic authentication username for connecting to Elasticsearch.
+
+---
+
+`password` _string_
+
+: The basic authentication password for connecting to Elasticsearch.
+
+---
+
+## Input
+
+Defines an Elastic Agent input configuration.
+
+## Config
+
+{/* The struct name is Config, but I think we need something more descriptive. Maybe Filestream input Can we automate this?  */}
+
+Defines a filestream input configuration.
+
+---
+
+`id` _string_
+
+: The ID of blah blah blah
+
+---
+
+`data_stream` _<DocLink id="agentConfigReference" section="datastream" text="typ.DataStream" />_
+
+: The data stream to send events to.
+
+---
+
+`paths` _[]string_
+
+: A list of glob-based paths that will be crawled and fetched.
+
+---
+
+`use_output` _string_
+
+: The output to use for this filestream output.
+
+---
+
+## Datastream
+
+Defines the datastream used by an input.
+
+---
+
+{/* I think this is wrong, but I'm not sure how the struct maps to what I see in the refernece yaml.  */}
+
+`type` _string_
+
+: The type of blah blah blah.
+
+---
+
+{/* How will we document available datasets? It's gonna be A LOT. */}
+
+`dataset` _string_
+
+: The dataset to use to fetch and structure data.
+The dataset name must conform to the naming conventions for Elasticsearch indices.
+The name cannot contain dashes (-) or exceed 100 bytes.
+
+---
+
+`namespace` _string_
+
+: A user-configurable arbitrary grouping, such as an environment (dev, prod, or qa), a team, or a strategic business unit.
+A namespace can be up to 100 bytes in length (multibyte characters will count toward this limit faster).
+
+## Config
+
+{/* Again the struct name is Config, but I think we need something more descriptive. Maybe something like TCP input. Can we automate this?  */}
+
+Defines a tcp input configuration.
+
+---
+
+`port` _int_
+
+: The TCP port to listen on for event streams.
+
+---
+
+`host` _string_
+
+: The host to listen on for event streams.
+
+---
+
+`ssl` _<DocLink id="agentConfigReference" section="tlsconfig" text="typ.TLSConfig" />_
+
+## TLSConfig
+
+Configure a TCP client or server.
+
+```yaml
+ssl.verification_mode: full
+ssl.supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
+ssl.cipher_suites: []
+ssl.curve_types: []
+```
+
+`supported_protocols` _[]string_
+
+: List of allowed SSL/TLS versions.
+If the SSL/TLS server supports none of the specified versions, the connection will be dropped during or after the handshake.
+
+    Valid values:
+
+    - `SSLv3`
+    - `TLSv1`
+    - `TLSv1.0`
+    - `TLSv1.1`
+    - `TLSv1.2`
+    - `TLSv1.3`
+
+---
+
+`verification_mode` _string_
+
+: Configures the SSL/TLS verification mode used during handshake.
+
+    Valid values:
+
+    - `full` (default)
+    - `strict`
+    - `certificate`
+    - `none`
+
+---
+
+`certificates` _[]string_
+
+: List of certificate chains to present to the other side of the connection.
+
+---
+
+`certificate_authorities` _[]string_
+
+: List of root certificate authorities used to verify server certificates.
+If this setting is empty or unset, TLS may use the system's root CA (not supported on MS Windows).
+
+---
+
+`client_certificate_authorities` _[]string_
+
+: List of root certificate authorities to use to verify client certificates.
+If this setting is empty or unset, TLS may use the system's root CA set (not supported on MS Windows).
+
+---
+
+`cipher_suites` _[]string_
+
+: List of supported cipher suites.
+If nil, a default list provided by the implementation is used.
+
+    For a list of supported cipher suites, see ADD LINK HERE 
+
+---
+
+`curve_types` _[]string_
+
+: List of elliptic curve types to use in an ECDHE handshake.
+If empty, the implementation chooses a default.
+
+    Valid values:
+
+    - `P-256`
+    - `P-384`
+    - `P-521`
+    - `X25519`
+
+---
+
+`renegotiation` _string_
+
+: The type of renegotiation that's supported.
+The default is correct for the vast majority of applications.
+
+    Valid values:
+
+    - `never` (default)
+    - `once`
+    - `freely`
+
+---
+
+`verification_mode` _string_
+
+: Controls how certificates from the client are verified.
+Does not affect the TCP client.
+
+    Valid values:
+
+    - `none`
+    - `optional`
+    - `required` (default)
+
+---
+
+`ca_sha256` _string_
+
+: The CA certificate pin used to validate the CA used to trust the server certificate.
+The pin is a base64 encoded string of the SHA-256 of the certificate.
+
+    <DocCallOut color="warning" title="Important">
+      Do not use this setting with `verification_mode: none`, or the check will always fail because it will not receive any verified chains.
+    </DocCallOut>
+
+----
+
+`ca_trusted _fingerprint` _string_
+
+: The HEX-encoded fingerprint of a CA certificate.
+If present in the chain, this certificate is added to the list of trusted CAs (root CAs) during the handshake.
+
+---

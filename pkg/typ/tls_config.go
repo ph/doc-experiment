@@ -8,8 +8,6 @@ import (
 
 // TLSConfig is the interface used to configure a tcp client or server from a `Config`
 //
-//  examples:
-//     - value: tlsConfigExample
 type TLSConfig struct {
 
 	//   description: |
